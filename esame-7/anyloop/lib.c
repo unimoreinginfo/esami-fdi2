@@ -5,20 +5,16 @@ bool _contains(Item* source, Item* node);
 bool AnyLoop(Item* l) {
 
 	Item* head = l;
-	Item* helper_list = NULL;
-	Item* helper_list_head = NULL;
+	Item** indexes = malloc(sizeof(Item*) * 100); // tengo gli indirizzi dei nodi qui
 	int is_set = 0;
+	int index = 0;
 
 	while (l) {
 
-		if (_contains(helper_list_head, l))
+		if (_contains(indexes, index, l))
 			return true;
 
-		helper_list = InsertBackList(helper_list, &l->value);
-		if (!is_set) {
-			helper_list_head = helper_list;
-			is_set = 1;
-		}
+		indexes[index++] = l;
 
 		l = l->next;
 
@@ -28,20 +24,16 @@ bool AnyLoop(Item* l) {
 
 }
 
-bool _contains(Item* source, Item* node) {
+bool _contains(Item** source, int size, Item* node) {
 
-	Item *h = source;
+	Item* h = source;
 
-	while (source) {
+	for (int i = 0; i < size; i++) {
 
-		if (source->value == node->value)
+		if (source[i] == node)
 			return true;
 
-		source = source->next;
-
 	}
-
-	source = &h;
 	return false;
 
 }
