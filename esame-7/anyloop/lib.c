@@ -20,6 +20,8 @@ bool AnyLoop(Item* l) {
 
 	}
 
+	free(indexes);
+
 	return false;
 
 }
