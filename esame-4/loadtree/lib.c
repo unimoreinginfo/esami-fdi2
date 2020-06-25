@@ -1,7 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "lib.h"
 
-Node* loadtree_helper(Node* tree, char* value, FILE* file);
+Node* loadtree(FILE* f);
 
 Node* LoadTree(const char* filename) {
 
@@ -9,56 +9,65 @@ Node* LoadTree(const char* filename) {
 	if (!f)
 		return NULL;
 
-	// skip ws fscanf(file, " %s\n");
+	// skip whitespaces: fscanf(file, " %s\n");
+	/*char** stuff = malloc(sizeof(char*) * 40);
+	for (int i = 0; i < 40; i++)
+		stuff[i] = malloc(sizeof(char) * 3); // stringhe lunghe 2 + terminatore
 
-	Node* tree = CreateEmptyTree();
+	int index = 0;
+	while (1) {
 
-	char r[3], q[3];
-	r[2] = 0;
+		char str[3];
+		int result = fgets(&str, 3, f);
+		if (!result || result == '\n')
+			break;
 
-	int root = fscanf(f, "%s\n", r);
-	if (root == EOF)
-		return NULL;
-	int is_set = 0;
-	Node* head = loadtree_helper(tree, r, f);
+		strcpy(stuff[index], &str);
+		stuff[index][2] = 0;
+		index++;
 
-	// la cosa migliore sarebbe in realt� leggere tutti i valori da file
-	// farci un array e poi trasformare l'array in un albero
-	// questo, non so come mai, non funziona
+	}
+	
+	for (int i = 0; i < index; i++)
+		printf("%s", stuff[i]);
 
-	return head;
+	stuff[index] = '\0';*/
+	return loadtree(f);
 
 }
 
-Node* loadtree_helper(Node* tree, char* value, FILE* file) {
+Node* loadtree(FILE* f) {
 
-	if (!file)
-		return;
+	// costruisco l'albero dalle foglie (postorder)
+	// faccio tutto quanto a partire dal basso e poi mi ritrovo con l'indirizzo della radice!
+	// perché non ci ho pensato prima wtff
+	char current[3];
+	char c;
+	int is_leaf = 0;
 
-	char l[3], rr[3];
-	l[2] = 0;
-	rr[2] = 0;
+	int result = fgets(&current, 3, f);
+	if (!result)
+		return NULL;
 
-	if (value == EOF)
-		return;
-
-	char root_char;
-
-	if (strlen(value) == 2)
-		root_char = value[1];
+	if (strlen(current) == 1) {
+		return loadtree(f);
+		// se fai un file su windows aspettati degli \n messi a cazzo di cane completamente
+	}
+	
+	if (current[0] == '.') {
+		c = current[1];
+		is_leaf = 1;
+	}
 	else
-		root_char = value[0];
+		c = current[0];
 
-	tree = CreateRootTree(&root_char, CreateEmptyTree(), CreateEmptyTree());
+	if (is_leaf)
+		return CreateRootTree(&c, NULL, NULL);
 
-	if (value[0] == '.')
-		return;
+	Node* l = loadtree(f);
+	Node* r = loadtree(f);
 
-	int left = fscanf(file, "%s\n", l);
-	loadtree_helper(tree->left, l, file);
-	int right = fscanf(file, "%s\n", rr);
-	loadtree_helper(tree->right, rr, file);
-
-	return tree;
+	return CreateRootTree(&c, l, r);
+	
 
 }

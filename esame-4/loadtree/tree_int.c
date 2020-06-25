@@ -41,7 +41,7 @@ int ReadStdinElem(ElemType* e)
 
 void WriteElem(const ElemType* e, FILE* f)
 {
-    fprintf(f, "%d", *e);
+    fprintf(f, "%c", *e);
 }
 
 void WriteStdoutElem(const ElemType* e)
