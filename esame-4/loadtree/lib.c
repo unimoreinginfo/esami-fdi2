@@ -9,29 +9,6 @@ Node* LoadTree(const char* filename) {
 	if (!f)
 		return NULL;
 
-	// skip whitespaces: fscanf(file, " %s\n");
-	/*char** stuff = malloc(sizeof(char*) * 40);
-	for (int i = 0; i < 40; i++)
-		stuff[i] = malloc(sizeof(char) * 3); // stringhe lunghe 2 + terminatore
-
-	int index = 0;
-	while (1) {
-
-		char str[3];
-		int result = fgets(&str, 3, f);
-		if (!result || result == '\n')
-			break;
-
-		strcpy(stuff[index], &str);
-		stuff[index][2] = 0;
-		index++;
-
-	}
-	
-	for (int i = 0; i < index; i++)
-		printf("%s", stuff[i]);
-
-	stuff[index] = '\0';*/
 	return loadtree(f);
 
 }
